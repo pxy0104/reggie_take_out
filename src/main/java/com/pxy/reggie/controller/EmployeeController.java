@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 /**
  * @author pxy
@@ -61,5 +61,25 @@ public class EmployeeController {
     public R<String> logout(HttpServletRequest request){
         request.getSession().removeAttribute("employee");
         return R.success("退出成功");
+    }
+
+
+    /**
+     * 新增员工
+     * @param employee
+     * @return
+     */
+    @PostMapping
+    public R<String> save(@RequestBody Employee employee,HttpServletRequest request){
+        log.info("{}",employee.toString());  //测试封装employee
+        String password = DigestUtils.md5DigestAsHex("123456".getBytes());
+        employee.setPassword(password);
+        employee.setCreateTime(LocalDateTime.now());
+        employee.setUpdateTime(LocalDateTime.now());
+        Long currentId = (Long) request.getSession().getAttribute("employee");
+        employee.setCreateUser(currentId);
+        employee.setUpdateUser(currentId);
+        employeeService.save(employee);
+        return R.success("新增员工成功");
     }
 }

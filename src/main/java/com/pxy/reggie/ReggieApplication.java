@@ -3,6 +3,7 @@ package com.pxy.reggie;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 
 /**
  * @author pxy
@@ -10,8 +11,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @create 2023-03-23 15:07
  **/
 
-@Slf4j //lombok log配置
+
 @SpringBootApplication
+@ServletComponentScan
 public class ReggieApplication {
     public static void main(String[] args) {
         SpringApplication.run(ReggieApplication.class,args);
