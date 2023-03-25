@@ -1,10 +1,12 @@
 package com.pxy.reggie.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pxy.reggie.common.R;
 import com.pxy.reggie.entity.Employee;
 import com.pxy.reggie.service.EmployeeService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -74,12 +76,55 @@ public class EmployeeController {
         log.info("{}",employee.toString());  //测试封装employee
         String password = DigestUtils.md5DigestAsHex("123456".getBytes());
         employee.setPassword(password);
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        Long currentId = (Long) request.getSession().getAttribute("employee");
-        employee.setCreateUser(currentId);
-        employee.setUpdateUser(currentId);
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        Long editUserId = (Long) request.getSession().getAttribute("employee");
+//        employee.setCreateUser(editUserId);
+//        employee.setUpdateUser(editUserId);
         employeeService.save(employee);
         return R.success("新增员工成功");
     }
+
+    /**
+     * 员工列表分页查询
+     * @param page 当前页
+     * @param pageSize 一页大小
+     * @param name 页面查询员工姓名
+     * @return pages 返回页所有页信息
+     */
+    @GetMapping("/page")
+    public R<Page> page(int page,int pageSize,String name){
+        log.info("page={},page={},name={}",page,pageSize,name);//测试接口是否接收到数据
+        Page pageInfo = new Page(page, pageSize);
+        //构造条件构造器
+        LambdaQueryWrapper<Employee> wrapper = new LambdaQueryWrapper();
+        //过滤 模糊查询
+        wrapper.like(StringUtils.isNotEmpty(name),Employee::getName,name);
+        //排序条件
+        wrapper.orderByDesc(Employee::getUpdateTime);
+        //执行查询
+        Page pages = employeeService.page(pageInfo, wrapper);
+        return R.success(pages);
+    }
+    @PutMapping
+    public R<String> update(@RequestBody Employee employee,HttpServletRequest request){
+        log.info(employee.toString()); //测试接口是否接收参数成功
+        Long updateUserId = (Long) request.getSession().getAttribute("employee");
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(updateUserId);
+        employeeService.updateById(employee);
+        return R.success("修改成功");
+    }
+
+    /**
+     * 编辑数据回显
+     * @param id 前端请求id
+     * @return 数据库员工信息
+     */
+    @GetMapping("/{id}")
+    public R<Employee> getById(@PathVariable Long id){
+        Employee emp = employeeService.getById(id);
+        return R.success(emp);
+    }
+
 }
