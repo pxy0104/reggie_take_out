@@ -4,12 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pxy.reggie.common.R;
 import com.pxy.reggie.entity.Category;
-import com.pxy.reggie.entity.Employee;
 import com.pxy.reggie.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author pxy
@@ -37,8 +37,8 @@ public class CategoryController {
 
     /**
      *  分类分页查询
-     * @param page
-     * @param pageSize
+     * @param page 当前页
+     * @param pageSize 页大小
      * @return
      */
     @GetMapping("/page")
@@ -75,4 +75,15 @@ public class CategoryController {
         categoryService.updateById(category);
         return R.success("修改分类成功");
     }
+
+    @GetMapping("/list")
+    public R<List<Category>> list(Category category){
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(category.getType()!= null,Category::getType,category.getType());
+        wrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+        List<Category> list = categoryService.list(wrapper);
+        return R.success(list);
+    }
+
+
 }
