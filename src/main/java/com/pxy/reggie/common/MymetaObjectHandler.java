@@ -3,19 +3,8 @@ package com.pxy.reggie.common;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
-import javax.annotation.Resources;
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-
-/**
- * @author pxy
- * @software IntelliJ IDEA
- * @create 2023-03-25 11:51
- **/
 
 /**
  * 自定义元数据对象处理器
