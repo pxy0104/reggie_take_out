@@ -70,4 +70,18 @@ public class DishController {
         dishDtoPage.setRecords(list);
         return R.success(dishDtoPage);
     }
+
+    //菜品管理的修改功能-数据回显
+    @GetMapping("/{id}")
+    public R<DishDto> get(@PathVariable Long id) {
+        DishDto dishDto = dishService.getByIdWithFlavor(id);
+        return R.success(dishDto);
+    }
+
+    //菜品管理-保存菜品和口味信息
+    @PutMapping
+    public R<String> update(@RequestBody DishDto dishDto) {
+        dishService.updateWithFlavor(dishDto);
+        return R.success("修改成功");
+    }
 }

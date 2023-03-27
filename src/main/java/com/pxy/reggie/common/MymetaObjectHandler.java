@@ -23,8 +23,6 @@ import java.time.LocalDateTime;
 @Component
 @Slf4j
 public class MymetaObjectHandler implements MetaObjectHandler {
-
-
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("公共字段填充");
