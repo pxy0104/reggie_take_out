@@ -6,6 +6,7 @@ import com.pxy.reggie.common.R;
 import com.pxy.reggie.dto.DishDto;
 import com.pxy.reggie.entity.Category;
 import com.pxy.reggie.entity.Dish;
+import com.pxy.reggie.entity.DishFlavor;
 import com.pxy.reggie.service.CategoryService;
 import com.pxy.reggie.service.DishFlavorService;
 import com.pxy.reggie.service.DishService;
@@ -13,7 +14,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -83,5 +86,33 @@ public class DishController {
     public R<String> update(@RequestBody DishDto dishDto) {
         dishService.updateWithFlavor(dishDto);
         return R.success("修改成功");
+    }
+
+    /**
+     * 套餐批量删除和单个删除
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam("ids") List<Long> ids){
+        //删除菜品  这里的删除是逻辑删除
+        dishService.deleteByIds(ids);
+        //删除菜品对应的口味  也是逻辑删除
+        LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(DishFlavor::getDishId,ids);
+        dishFlavorService.remove(queryWrapper);
+        return R.success("菜品删除成功");
+    }
+
+    @PostMapping("/status/{status}")
+    public R<String> status(@PathVariable Integer status,@RequestParam List<Long> ids) {
+//            log.info(ids.toString());
+            for (Long id : ids) {
+                Dish dish = dishService.getById(id);
+                if (dish.getStatus() != status) {
+                    dish.setStatus(status);
+                }
+                dishService.updateById(dish);
+            }
+        return R.success("售卖状态修改成功");
     }
 }

@@ -2,6 +2,7 @@ package com.pxy.reggie.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -43,5 +44,9 @@ public class DishFlavor implements Serializable {
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateUser;
+
+
+    //是否删除
+    private Integer isDeleted;
 
 }

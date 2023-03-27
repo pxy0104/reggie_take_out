@@ -2,6 +2,7 @@ package com.pxy.reggie.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.pxy.reggie.common.CustomException;
 import com.pxy.reggie.dto.DishDto;
 import com.pxy.reggie.entity.Dish;
 import com.pxy.reggie.entity.DishFlavor;
@@ -75,4 +76,31 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         }).collect(Collectors.toList());
         dishFlavorService.saveBatch(flavors);
     }
+    /**
+     *套餐批量删除和单个删除
+     * @param ids
+     */
+
+    @Transactional
+    @Override
+    public void deleteByIds(List<Long> ids) {
+
+        //构造条件查询器
+        LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        //先查询该菜品是否在售卖，如果是则抛出业务异常
+        queryWrapper.in(ids!=null,Dish::getId,ids);
+        List<Dish> list = this.list(queryWrapper);
+        for (Dish dish : list) {
+            Integer status = dish.getStatus();
+            //如果不是在售卖,则可以删除
+            if (status == 0){
+                this.removeById(dish.getId());
+            }else {
+                //此时应该回滚,因为可能前面的删除了，但是后面的是正在售卖
+                throw new CustomException("删除菜品中有正在售卖菜品,无法全部删除");
+            }
+        }
+
+    }
+
 }
