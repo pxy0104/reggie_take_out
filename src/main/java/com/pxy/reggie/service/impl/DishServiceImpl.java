@@ -57,7 +57,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         return dishDto;
     }
 
-    //更新保存菜品 以及口味
+    //更新保存菜品以及口味
     @Transactional
     @Override
     public void updateWithFlavor(DishDto dishDto) {
@@ -76,15 +76,14 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         }).collect(Collectors.toList());
         dishFlavorService.saveBatch(flavors);
     }
+
     /**
      *套餐批量删除和单个删除
      * @param ids
      */
-
     @Transactional
     @Override
     public void deleteByIds(List<Long> ids) {
-
         //构造条件查询器
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
         //先查询该菜品是否在售卖，如果是则抛出业务异常
