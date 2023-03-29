@@ -109,4 +109,8 @@ public class SetmealController {
         return R.success("删除成功");
     }
 
+    public R<List<Setmeal>> list(@RequestBody Setmeal setmeal){
+
+        return null;
+    }
 }

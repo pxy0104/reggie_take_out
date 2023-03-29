@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.pxy.reggie.common.R;
 import com.pxy.reggie.entity.User;
 import com.pxy.reggie.service.UserService;
-import com.pxy.reggie.utils.SMSUtils;
+
 import com.pxy.reggie.utils.ValidateCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -31,7 +31,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
     //请求手机验证码
     @PostMapping("/sendMsg")
     public R<String> sendMsg(@RequestBody User user, HttpSession session) {
@@ -75,5 +74,16 @@ public class UserController {
             return R.success(user);
         }
         return R.error("登录失败");
+    }
+
+    /**
+     * 用户退出
+     * @param request
+     * @return
+     */
+    @PostMapping("/loginout")
+    public R<String> loginout(HttpServletRequest request){
+        request.getSession().removeAttribute("user");
+        return R.success("退出成功");
     }
 }
