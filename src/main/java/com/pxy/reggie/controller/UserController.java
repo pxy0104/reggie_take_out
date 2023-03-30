@@ -59,10 +59,10 @@ public class UserController {
         String code = map.get("code").toString();
         //从Session中获取保存的验证码
         Object codeInSession = session.getAttribute(phone);
-        if (codeInSession != null && codeInSession.equals(code)) {
+        if (codeInSession != null && code.equals(codeInSession)) {
             LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper();
-            User user = userService.getOne(wrapper);
             wrapper.eq(User::getPhone, phone);
+            User user = userService.getOne(wrapper);
             if (user == null) {
                 //判断是否是新用户
                 user = new User();
