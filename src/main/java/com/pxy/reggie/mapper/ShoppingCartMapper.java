@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @software IntelliJ IDEA
  * @create 2023-03-30 22:42
  **/
-
 @Mapper
 public interface ShoppingCartMapper extends BaseMapper<ShoppingCart> {
 }
