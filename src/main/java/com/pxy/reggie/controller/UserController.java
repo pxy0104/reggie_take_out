@@ -50,8 +50,8 @@ public class UserController {
             //存入code以进行比较
             session.setAttribute(phone, code);
             //设置验证码时间，并将验证码缓存到Redis中
-            redisTemplate.opsForValue().set(phone,code,5,TimeUnit.MINUTES);
-
+//            redisTemplate.opsForValue().set(phone,code,5,TimeUnit.MINUTES);
+            redisTemplate.opsForValue().set(phone,code,5, TimeUnit.MINUTES);
             return R.success("验证码发送成功！");
         }
         return R.error("短信发送失败");
